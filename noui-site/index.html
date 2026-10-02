@@ -1853,15 +1853,18 @@ async function submitOrder(e){
     total: cartTotal(), page: location.href,
   };
   try {
-    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 20000);
-    const r = await fetch(ORDER_ENDPOINT, { method: 'POST', body: JSON.stringify(payload), signal: ctrl.signal });
-    clearTimeout(t);
-    const res = await r.json();
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 45000);
+    let r;
+    try { r = await fetch(ORDER_ENDPOINT, { method: 'POST', body: JSON.stringify(payload), signal: ctrl.signal, redirect: 'follow' }); }
+    catch(e){ throw new Error(e.name === 'AbortError' ? 'délai dépassé' : 'connexion impossible'); }
+    finally { clearTimeout(t); }
+    const txt = await r.text(); let res;
+    try { res = JSON.parse(txt); } catch(e){ throw new Error('réponse inattendue du serveur (' + r.status + ')'); }
     if(!res.ok) throw new Error(res.error || 'refus');
     showDone(c, res.order, res.emailed ? 'mail' : 'saved');
   } catch(err){
     btn.disabled = false; btn.innerHTML = `${ico('i-check')}Confirmer ma commande`;
-    errBox.innerHTML = `<div class="form-err">Votre commande n'a pas pu être envoyée (connexion interrompue). Réessayez, ou envoyez-la sur WhatsApp : <br><a class="wa-alt" style="margin-top:8px" target="_blank" rel="noopener" href="${wa(waOrderText(c))}">${ico('i-chat')}Envoyer ma commande sur WhatsApp</a></div>`;
+    errBox.innerHTML = `<div class="form-err">Votre commande n'a pas pu être envoyée (${esc(err.message || 'connexion interrompue')}). Réessayez, ou envoyez-la sur WhatsApp : <br><a class="wa-alt" style="margin-top:8px" target="_blank" rel="noopener" href="${wa(waOrderText(c))}">${ico('i-chat')}Envoyer ma commande sur WhatsApp</a></div>`;
   }
 }
 
