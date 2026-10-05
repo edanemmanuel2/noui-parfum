@@ -1483,8 +1483,10 @@ let stockMap = {};     // { slug: quantité } — rempli après coup, par appel 
 let stockLoaded = false;
 function stockOf(p){ return stockLoaded && Object.prototype.hasOwnProperty.call(stockMap, p.img) ? stockMap[p.img] : null; }
 function outOfStock(p){ const s = stockOf(p); return s !== null && s <= 0; }
+/* Mettre true pour réafficher « Rupture de stock » sur le site (désactivé : le stock reste interne). */
+const SHOW_STOCK = false;
 async function fetchStock(){
-  if(!ORDER_ENDPOINT) return;
+  if(!SHOW_STOCK || !ORDER_ENDPOINT) return;
   try{
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
