@@ -232,10 +232,6 @@ img{max-width:100%; display:block}
 .card-vis{padding:18px 16px 14px}
 .card-img{width:min(100%,230px); height:auto; aspect-ratio:1; object-fit:contain; filter:drop-shadow(0 14px 14px rgba(18,17,16,.13))}
 .badge{position:absolute; top:12px; left:12px; font-size:.68rem; letter-spacing:.04em; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); padding:3px 9px; border-radius:999px}
-.badge-stock{position:absolute; top:12px; right:12px; font-size:.68rem; letter-spacing:.03em; font-weight:600; color:#fff; background:var(--ink); padding:3px 10px; border-radius:999px}
-.card.out .card-img{opacity:.55}
-.m-stock{display:inline-flex; align-items:center; gap:7px; font-size:.78rem; font-weight:600; color:#fff; background:var(--ink); padding:7px 14px; border-radius:999px; align-self:flex-start}
-.m-stock .icon{width:14px; height:14px; stroke-width:1.9}
 .card-body{padding:20px; display:flex; flex-direction:column; gap:11px; flex:1}
 .card-house{font-size:.76rem; color:var(--orange); font-weight:600}
 .card h3{font-size:1.28rem}
@@ -363,7 +359,6 @@ img{max-width:100%; display:block}
 .qresult-house{font-size:.7rem; color:var(--orange); font-weight:600}
 .qresult-name{font-size:.9rem; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .qresult-price{font-size:.83rem; color:var(--ink-soft); font-weight:600; flex-shrink:0}
-.qresult-out{font-size:.72rem; font-weight:700; color:#fff; background:var(--ink); padding:3px 9px; border-radius:999px}
 .qsearch-more{display:block; width:100%; text-align:center; padding:14px; color:var(--orange); font-weight:600; font-size:.84rem;
   background:none; border:0; border-top:1px solid var(--line); margin-top:4px; cursor:pointer; font-family:inherit}
 .qsearch-more:hover{background:var(--orange-soft)}
@@ -472,8 +467,7 @@ img{max-width:100%; display:block}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
   .card-vis{padding:12px 8px 8px}
   .badge{top:8px; left:8px; font-size:.6rem; padding:2px 7px}
-  .badge-stock{top:8px; right:8px; font-size:.6rem; padding:2px 8px}
-  .card-body{padding:12px 12px 14px !important; gap:4px}
+    .card-body{padding:12px 12px 14px !important; gap:4px}
   .card-body h3{font-size:1.05rem; line-height:1.2}
   .card-house{font-size:.66rem}
   .card-fam{font-size:.78rem}
@@ -1478,30 +1472,6 @@ const products = [
 ];
 /* PRODUCTS:END */
 
-/* ---- stock (rupture / disponible) ---- */
-let stockMap = {};     // { slug: quantité } — rempli après coup, par appel réseau
-let stockLoaded = false;
-function stockOf(p){ return stockLoaded && Object.prototype.hasOwnProperty.call(stockMap, p.img) ? stockMap[p.img] : null; }
-function outOfStock(p){ const s = stockOf(p); return s !== null && s <= 0; }
-/* Mettre true pour réafficher « Rupture de stock » sur le site (désactivé : le stock reste interne). */
-const SHOW_STOCK = false;
-async function fetchStock(){
-  if(!SHOW_STOCK || !ORDER_ENDPOINT) return;
-  try{
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 8000);
-    const r = await fetch(ORDER_ENDPOINT + '?action=stock', { signal: ctrl.signal });
-    clearTimeout(t);
-    if(!r.ok) return;
-    const data = await r.json();
-    if(data && data.ok && data.stock && typeof data.stock === 'object'){
-      stockMap = data.stock; stockLoaded = true;
-      paint();
-      if(!modal.hidden && currentSlug) paintStockBadge(prodOf(currentSlug));
-    }
-  }catch(e){ /* pas grave : le site continue de fonctionner sans info de stock */ }
-}
-
 const MOMENTS = [
   {v:"homme",     l:"Pour lui",          i:"i-homme",     kind:"genre"},
   {v:"femme",     l:"Pour elle",         i:"i-femme",     kind:"genre"},
@@ -1647,13 +1617,11 @@ const lowest = p => p.sizes.reduce((a,b) => b.price < a.price ? b : a, p.sizes[0
 
 function card(p){
   const el = document.createElement('div');
-  const out = outOfStock(p);
-  el.className = 'card' + (out ? ' out' : '');
+  el.className = 'card';
   const min = lowest(p);
   el.innerHTML = `
     <button class="card-vis" aria-label="Voir le détail de ${p.name}">
       <span class="badge">${cap(p.cat)}</span>
-      ${out ? `<span class="badge-stock">Rupture de stock</span>` : ''}
       <img class="card-img" src="img/${p.img}.webp" alt="Flacon ${p.name}" loading="lazy" decoding="async" width="400" height="400">
       <span class="peek">${ico('i-eye')}Voir le détail</span>
     </button>
@@ -1691,7 +1659,6 @@ function openModal(p){
     <div class="m-house">${p.house}${p.line ? ` · ${p.line}` : ""}</div>
     <h3 id="mName">${p.name}</h3>
     <div class="m-fam">${p.family}</div>
-    <div class="m-stock" id="mStockBadge" hidden>${ico('i-close')}Rupture de stock</div>
     <p class="m-desc">${p.desc}</p>
 
     <div class="m-block">
@@ -1791,23 +1758,11 @@ function openModal(p){
     addEl.innerHTML = `${ico('i-check')}Ajouté · Voir mon panier`;
   };
   render();
-  paintStockBadge(p);
 
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
   syncURL(p.img);
   modal.querySelector('.modal-x').focus();
-}
-
-function paintStockBadge(p){
-  const badge = document.getElementById('mStockBadge');
-  const addEl = document.getElementById('mAdd');
-  if(!badge || !addEl) return;
-  const out = outOfStock(p);
-  badge.hidden = !out;
-  addEl.disabled = out;
-  if(out){ delete addEl.dataset.added; addEl.innerHTML = `${ico('i-close')}Rupture de stock`; }
-  else if(!addEl.dataset.added){ addEl.innerHTML = `${ico('i-bag')}Ajouter au panier`; }
 }
 
 function closeModal(){
@@ -1849,7 +1804,7 @@ function renderQuickResults(qRaw){
     <button type="button" class="qresult" data-slug="${p.img}">
       <img src="img/${p.img}.webp" alt="" width="44" height="44" loading="lazy">
       <div class="qresult-info"><div class="qresult-house">${esc(p.house)}</div><div class="qresult-name">${esc(p.name)}</div></div>
-      <div class="qresult-price">${outOfStock(p) ? '<span class="qresult-out">Rupture</span>' : fmt(lowest(p).price)}</div>
+      <div class="qresult-price">${fmt(lowest(p).price)}</div>
     </button>`).join("")
     + (list.length > MAX ? `<button type="button" class="qsearch-more" id="qSeeAll">Voir les ${list.length} résultats dans le catalogue</button>` : "");
   qSearchResults.querySelectorAll('.qresult').forEach(b => {
@@ -2193,7 +2148,6 @@ if(fromURL.product){
 } else if(fromURL.filtered){
   setTimeout(() => document.getElementById('catalogue').scrollIntoView(), 120);
 }
-fetchStock();
 
 /* ---- apparition au défilement ---- */
 document.querySelectorAll('.sec-head, .assur-item, .maison, .occ').forEach(el => {
