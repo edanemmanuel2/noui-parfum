@@ -72,6 +72,9 @@ img{max-width:100%; display:block}
   box-shadow:var(--glow); transition:background .25s var(--lift), box-shadow .25s var(--lift), transform .25s var(--lift)}
 .head-nav .head-cta:hover{background:#ad4300; color:#fff; box-shadow:var(--glow-strong); transform:translateY(-2px)}
 .head-nav .head-cta .icon{width:17px; height:17px; stroke-width:1.9; color:#fff; stroke:#fff}
+.head-search{border:0; background:none; cursor:pointer; padding:6px; display:inline-flex; color:var(--ink-soft); border-radius:50%; transition:color .22s var(--lift), background .22s var(--lift)}
+.head-search .icon{width:19px; height:19px; stroke-width:1.7}
+.head-search:hover{color:var(--orange); background:var(--orange-soft)}
 .cart-n{min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:#fff; color:var(--orange); font-size:.78rem; font-weight:800; display:inline-grid; place-items:center; margin-left:2px}
 .cart-n.bump{animation:bump .3s var(--lift)}
 .head-nav a.head-cta:hover{background:#ad4300; color:#fff; box-shadow:var(--glow-strong); transform:translateY(-2px)}
@@ -133,6 +136,8 @@ img{max-width:100%; display:block}
 .btn:hover{background:#ad4300; box-shadow:var(--glow-strong); transform:translateY(-2px)}
 .btn:active{transform:translateY(0); box-shadow:0 4px 10px -6px rgba(198,78,0,.7)}
 .btn .icon{width:19px; height:19px; stroke-width:1.8; color:#fff; stroke:#fff}
+.btn:disabled{background:var(--ink-soft); box-shadow:none; cursor:not-allowed; transform:none; opacity:.7}
+.btn:disabled:hover{background:var(--ink-soft); box-shadow:none; transform:none}
 
 /* ---------- assurances ---------- */
 .assur{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--smoke)}
@@ -182,6 +187,20 @@ img{max-width:100%; display:block}
   border:1px solid var(--line); border-radius:999px; padding:4px 10px}
 .when-tag .icon{width:13px; height:13px; stroke-width:1.6; color:var(--orange)}
 
+/* ---------- recherche ---------- */
+.search-wrap{position:relative; max-width:460px; margin:0 auto 26px; padding:0 24px}
+.search-ic{position:absolute; left:40px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke-width:1.6; color:var(--ink-soft); pointer-events:none}
+.search-input{width:100%; box-sizing:border-box; font-family:'Manrope',system-ui,sans-serif; font-size:.9rem; color:var(--ink);
+  background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:13px 44px 13px 42px;
+  transition:border-color .22s var(--lift), box-shadow .22s var(--lift); -webkit-appearance:none; appearance:none}
+.search-input::placeholder{color:var(--ink-soft)}
+.search-input:focus{outline:none; border-color:var(--orange); box-shadow:var(--glow)}
+.search-input::-webkit-search-cancel-button{display:none}
+.search-clear{position:absolute; right:30px; top:50%; transform:translateY(-50%); width:26px; height:26px; display:flex;
+  align-items:center; justify-content:center; background:none; border:none; color:var(--ink-soft); cursor:pointer; border-radius:50%; transition:.2s var(--lift)}
+.search-clear .icon{width:15px; height:15px; stroke-width:1.8}
+.search-clear:hover{color:var(--orange); background:var(--orange-soft)}
+
 /* ---------- filtres ---------- */
 .filters{max-width:1140px; margin:0 auto; padding:0 24px 34px}
 .fgroup + .fgroup{margin-top:18px}
@@ -213,6 +232,10 @@ img{max-width:100%; display:block}
 .card-vis{padding:18px 16px 14px}
 .card-img{width:min(100%,230px); height:auto; aspect-ratio:1; object-fit:contain; filter:drop-shadow(0 14px 14px rgba(18,17,16,.13))}
 .badge{position:absolute; top:12px; left:12px; font-size:.68rem; letter-spacing:.04em; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); padding:3px 9px; border-radius:999px}
+.badge-stock{position:absolute; top:12px; right:12px; font-size:.68rem; letter-spacing:.03em; font-weight:600; color:#fff; background:var(--ink); padding:3px 10px; border-radius:999px}
+.card.out .card-img{opacity:.55}
+.m-stock{display:inline-flex; align-items:center; gap:7px; font-size:.78rem; font-weight:600; color:#fff; background:var(--ink); padding:7px 14px; border-radius:999px; align-self:flex-start}
+.m-stock .icon{width:14px; height:14px; stroke-width:1.9}
 .card-body{padding:20px; display:flex; flex-direction:column; gap:11px; flex:1}
 .card-house{font-size:.76rem; color:var(--orange); font-weight:600}
 .card h3{font-size:1.28rem}
@@ -273,6 +296,21 @@ img{max-width:100%; display:block}
 .m-label{font-family:'Bodoni Moda',serif; font-style:italic; font-size:.88rem; color:var(--ink-soft); display:block; margin-bottom:8px}
 .m-notes{font-size:.88rem; line-height:1.6}
 .m-notes b{font-weight:600}
+.note-group + .note-group{margin-top:12px}
+.note-sub{display:block; font-weight:700; font-size:.66rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:7px}
+.note-tag{border-color:transparent; background:var(--cat-bg); color:var(--cat-ink); font-weight:600}
+.note-tag .icon{color:var(--cat-ink)}
+.cat-oud{--cat-bg:#f1e4d6; --cat-ink:#8a5a2e}
+.cat-epice{--cat-bg:#fbe3cd; --cat-ink:#b1530f}
+.cat-floral{--cat-bg:#fbe1ea; --cat-ink:#bd3f74}
+.cat-ambre{--cat-bg:#fbe7c6; --cat-ink:#a06a0d}
+.cat-vanille{--cat-bg:#f7ecd8; --cat-ink:#93702c}
+.cat-musc{--cat-bg:#eaecf6; --cat-ink:#595f8f}
+.cat-cuir{--cat-bg:#e9ded2; --cat-ink:#6b4a2f}
+.cat-boise{--cat-bg:#e8ecdd; --cat-ink:#5c6a3c}
+.cat-vert{--cat-bg:#e1efdf; --cat-ink:#3c7a4a}
+.cat-fruit{--cat-bg:#fde0dc; --cat-ink:#c84a34}
+.cat-autre{--cat-bg:var(--smoke); --cat-ink:var(--ink-soft)}
 .m-total{border-top:1px solid var(--line); padding-top:14px}
 .m-total-line{font-size:.82rem; color:var(--ink-soft)}
 .m-price{font-family:'Manrope',system-ui,sans-serif; font-size:1.5rem; font-weight:700; color:var(--orange); display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
@@ -299,6 +337,40 @@ img{max-width:100%; display:block}
   background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px; font-size:.85rem; font-weight:600; pointer-events:none;
   transition:opacity .25s, transform .25s; max-width:calc(100vw - 32px); text-align:center}
 .toast.on{opacity:1; transform:translate(-50%,0)}
+
+/* ---------- recherche rapide ---------- */
+.search-overlay[hidden]{display:none}
+.search-overlay{position:fixed; inset:0; z-index:100; display:flex; justify-content:center; padding:0 16px}
+.search-overlay-back{position:absolute; inset:0; background:rgba(18,17,16,.55); backdrop-filter:blur(3px); animation:fade .25s var(--lift)}
+.search-overlay-panel{position:relative; width:min(600px,100%); max-height:min(70vh,560px); margin-top:min(12vh,100px);
+  background:var(--paper); border-radius:16px; box-shadow:0 40px 80px -30px rgba(18,17,16,.6); overflow:hidden;
+  display:flex; flex-direction:column; animation:pop .25s var(--lift)}
+.qsearch-bar{display:flex; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid var(--line); flex-shrink:0}
+.qsearch-bar > .icon{width:19px; height:19px; stroke-width:1.6; color:var(--ink-soft); flex-shrink:0}
+.qsearch-input{flex:1; min-width:0; border:0; outline:0; background:none; font:500 1.02rem/1.3 'Manrope',system-ui,sans-serif; color:var(--ink); -webkit-appearance:none; appearance:none}
+.qsearch-input::placeholder{color:var(--ink-soft)}
+.qsearch-input::-webkit-search-cancel-button{display:none}
+.qsearch-close{border:0; background:none; cursor:pointer; color:var(--ink-soft); display:flex; padding:6px; border-radius:50%; transition:.2s var(--lift); flex-shrink:0}
+.qsearch-close:hover{color:var(--orange); background:var(--orange-soft)}
+.qsearch-close .icon{width:16px; height:16px; stroke-width:1.8}
+.qsearch-results{overflow-y:auto; padding:8px}
+.qsearch-empty, .qsearch-hint{padding:40px 20px; text-align:center; color:var(--ink-soft); font-size:.88rem}
+.qresult{display:flex; align-items:center; gap:14px; width:100%; border:0; background:none; text-align:left; cursor:pointer;
+  padding:9px 10px; border-radius:10px; transition:background .18s var(--lift); font-family:inherit}
+.qresult:hover, .qresult:focus-visible{background:var(--orange-soft); outline:0}
+.qresult img{width:44px; height:44px; object-fit:contain; background:var(--smoke); border-radius:8px; flex-shrink:0}
+.qresult-info{flex:1; min-width:0}
+.qresult-house{font-size:.7rem; color:var(--orange); font-weight:600}
+.qresult-name{font-size:.9rem; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.qresult-price{font-size:.83rem; color:var(--ink-soft); font-weight:600; flex-shrink:0}
+.qresult-out{font-size:.72rem; font-weight:700; color:#fff; background:var(--ink); padding:3px 9px; border-radius:999px}
+.qsearch-more{display:block; width:100%; text-align:center; padding:14px; color:var(--orange); font-weight:600; font-size:.84rem;
+  background:none; border:0; border-top:1px solid var(--line); margin-top:4px; cursor:pointer; font-family:inherit}
+.qsearch-more:hover{background:var(--orange-soft)}
+@media(max-width:600px){
+  .search-overlay{padding:0}
+  .search-overlay-panel{width:100%; max-height:100vh; height:100vh; margin-top:0; border-radius:0}
+}
 @media(max-width:720px){
   .modal{padding:0}
   .modal-panel{grid-template-columns:1fr; max-height:100vh; height:100%; border-radius:0}
@@ -400,6 +472,7 @@ img{max-width:100%; display:block}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
   .card-vis{padding:12px 8px 8px}
   .badge{top:8px; left:8px; font-size:.6rem; padding:2px 7px}
+  .badge-stock{top:8px; right:8px; font-size:.6rem; padding:2px 8px}
   .card-body{padding:12px 12px 14px !important; gap:4px}
   .card-body h3{font-size:1.05rem; line-height:1.2}
   .card-house{font-size:.66rem}
@@ -432,12 +505,17 @@ img{max-width:100%; display:block}
     <symbol id="i-floral" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.4"/><ellipse cx="12" cy="6.3" rx="2.6" ry="3.6"/><ellipse cx="12" cy="17.7" rx="2.6" ry="3.6"/><ellipse cx="6.3" cy="12" rx="3.6" ry="2.6"/><ellipse cx="17.7" cy="12" rx="3.6" ry="2.6"/></symbol>
     <symbol id="i-ambre" viewBox="0 0 24 24"><path d="M12 3.2c3.3 4.6 5.1 7.7 5.1 10.2a5.1 5.1 0 0 1-10.2 0c0-2.5 1.8-5.6 5.1-10.2Z"/><path d="M9.5 14.4a2.6 2.6 0 0 0 2.6 2.6"/></symbol>
     <symbol id="i-epice" viewBox="0 0 24 24"><path d="m12 2.5 2.6 5.7 6.2.7-4.6 4.2 1.3 6.1L12 16.1l-5.5 3.1 1.3-6.1-4.6-4.2 6.2-.7Z"/><circle cx="12" cy="11.6" r="2.1"/></symbol>
+    <symbol id="i-fruit" viewBox="0 0 24 24"><path d="M12 9.2c-1.8-2-5-1.6-6 .8-1.3 3 .6 8 4.3 10 1 .5 2.4.5 3.4 0 3.7-2 5.6-7 4.3-10-1-2.4-4.2-2.8-6-.8Z"/><path d="M12 9.2V6.4c0-1.6 1.3-2.6 2.8-2.4"/></symbol>
+    <symbol id="i-musc" viewBox="0 0 24 24"><path d="M6.8 17.4a4.2 4.2 0 0 1-.6-8.3 5.6 5.6 0 0 1 10.8-2 4.6 4.6 0 0 1-.6 10.3Z"/></symbol>
+    <symbol id="i-cuir" viewBox="0 0 24 24"><path d="M4 12c3-5 13-5 16 0-3 5-13 5-16 0Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></symbol>
+    <symbol id="i-vert" viewBox="0 0 24 24"><path d="M5 19c7-1 12-6 13-13-7 1-12 6-13 13Z"/><path d="M6.5 17.5 15 9"/></symbol>
     <!-- occasions -->
     <symbol id="i-quotidien" viewBox="0 0 24 24"><path d="M3.6 8.2h13v6.2a4.6 4.6 0 0 1-4.6 4.6H8.2a4.6 4.6 0 0 1-4.6-4.6Z"/><path d="M16.6 10.2h1.9a2.6 2.6 0 0 1 0 5.2h-1.9"/><path d="M6.6 4.6v1.4M10 3.8v2.2M13.4 4.6v1.4"/></symbol>
     <symbol id="i-bureau" viewBox="0 0 24 24"><rect x="2.8" y="7.4" width="18.4" height="12.2" rx="2.2"/><path d="M8.8 7.4V5.8a2 2 0 0 1 2-2h2.4a2 2 0 0 1 2 2v1.6"/><path d="M2.8 12.6h18.4M11 12.6v2.2h2v-2.2"/></symbol>
     <symbol id="i-soiree" viewBox="0 0 24 24"><path d="M19.4 14.6A7.8 7.8 0 0 1 9.4 4.6a7.8 7.8 0 1 0 10 10Z"/><path d="m17.2 3.4.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7Z"/></symbol>
     <symbol id="i-date" viewBox="0 0 24 24"><path d="M12 20.4C6.8 16.9 3.6 13.8 3.6 10.2a4.4 4.4 0 0 1 8.4-1.8 4.4 4.4 0 0 1 8.4 1.8c0 3.6-3.2 6.7-8.4 10.2Z"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.3"/><path d="M20.5 20.5 16 16"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1.8 12S5.6 5.4 12 5.4 22.2 12 22.2 12 18.4 18.6 12 18.6 1.8 12 1.8 12Z"/><circle cx="12" cy="12" r="3.2"/></symbol>
     <symbol id="i-ceremonie" viewBox="0 0 24 24"><path d="M7.6 3.4h8.8l3.8 5.2L12 20.6 3.8 8.6Z"/><path d="m9.6 8.6 2.4 12 2.4-12M3.8 8.6h16.4M7.6 3.4 9.6 8.6M16.4 3.4 14.4 8.6"/></symbol>
     <symbol id="i-chaud" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.6v2.4M12 19v2.4M4.3 4.3l1.7 1.7M18 18l1.7 1.7M2.6 12H5M19 12h2.4M4.3 19.7 6 18M18 6l1.7-1.7"/></symbol>
@@ -465,6 +543,7 @@ img{max-width:100%; display:block}
       <a href="#occasions">Occasions</a>
       <a href="#catalogue">Catalogue</a>
       <a href="#contact">Contact</a>
+      <button type="button" class="head-search" id="headSearchBtn" aria-label="Rechercher un parfum"><svg class="icon"><use href="#i-search"/></svg></button>
       <button type="button" class="head-cta" id="cartBtn" aria-label="Ouvrir le panier"><svg class="icon"><use href="#i-bag"/></svg><span class="cart-word">Panier</span><span class="cart-n" id="cartN" hidden>0</span></button>
     </nav>
   </div>
@@ -529,7 +608,13 @@ img{max-width:100%; display:block}
 <section class="sec" id="catalogue">
   <div class="sec-head">
     <h2>Le catalogue</h2>
-    <p>Affinez par genre, par maison ou par note dominante.</p>
+    <p>Recherchez un nom, une maison ou une note — ou affinez par genre, par maison ou par note dominante.</p>
+  </div>
+
+  <div class="search-wrap">
+    <svg class="icon search-ic"><use href="#i-search"/></svg>
+    <input type="search" id="searchInput" class="search-input" placeholder="Rechercher un parfum, une maison, une note…" autocomplete="off" enterkeyhint="search">
+    <button type="button" class="search-clear" id="searchClear" aria-label="Effacer la recherche" hidden><svg class="icon"><use href="#i-close"/></svg></button>
   </div>
 
   <div class="filters">
@@ -553,6 +638,19 @@ img{max-width:100%; display:block}
     <div class="grid" id="grid"></div>
   </div>
 </section>
+
+<!-- ============ recherche rapide ============ -->
+<div class="search-overlay" id="searchOverlay" hidden>
+  <div class="search-overlay-back" data-qsclose></div>
+  <div class="search-overlay-panel" role="dialog" aria-modal="true" aria-label="Rechercher un parfum">
+    <div class="qsearch-bar">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="search" id="qSearchInput" class="qsearch-input" placeholder="Rechercher un parfum, une maison, une note…" autocomplete="off" enterkeyhint="search">
+      <button type="button" class="qsearch-close" data-qsclose aria-label="Fermer la recherche"><svg class="icon"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="qsearch-results" id="qSearchResults"></div>
+  </div>
+</div>
 
 <!-- ============ fenêtre détail ============ -->
 <div class="modal" id="modal" hidden>
@@ -961,9 +1059,9 @@ const products = [
   "house": "Fragrance World",
   "cat": "homme",
   "family": "Fruité boisé",
-  "top": "Ananas, bergamote, cassis, pomme",
-  "heart": "Bouleau",
-  "base": "Vanille, mousse de chêne, musc",
+  "top": "Citron, pomme, notes marines",
+  "heart": "Notes florales",
+  "base": "Mousse de chêne, ambre, bois, caramel, musc",
   "tags": [
    "boise",
    "vanille"
@@ -1380,6 +1478,28 @@ const products = [
 ];
 /* PRODUCTS:END */
 
+/* ---- stock (rupture / disponible) ---- */
+let stockMap = {};     // { slug: quantité } — rempli après coup, par appel réseau
+let stockLoaded = false;
+function stockOf(p){ return stockLoaded && Object.prototype.hasOwnProperty.call(stockMap, p.img) ? stockMap[p.img] : null; }
+function outOfStock(p){ const s = stockOf(p); return s !== null && s <= 0; }
+async function fetchStock(){
+  if(!ORDER_ENDPOINT) return;
+  try{
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(ORDER_ENDPOINT + '?action=stock', { signal: ctrl.signal });
+    clearTimeout(t);
+    if(!r.ok) return;
+    const data = await r.json();
+    if(data && data.ok && data.stock && typeof data.stock === 'object'){
+      stockMap = data.stock; stockLoaded = true;
+      paint();
+      if(!modal.hidden && currentSlug) paintStockBadge(prodOf(currentSlug));
+    }
+  }catch(e){ /* pas grave : le site continue de fonctionner sans info de stock */ }
+}
+
 const MOMENTS = [
   {v:"homme",     l:"Pour lui",          i:"i-homme",     kind:"genre"},
   {v:"femme",     l:"Pour elle",         i:"i-femme",     kind:"genre"},
@@ -1418,10 +1538,35 @@ const NOTES = [
   {v:"epice", l:"Épicé", i:"i-epice"},
 ];
 
-const state = {genre:"tous", house:"tous", note:"tous", occ:null};
+const state = {genre:"tous", house:"tous", note:"tous", occ:null, q:""};
 const fmt = n => n.toLocaleString('fr-FR') + " FCFA";
 const wa = txt => `https://wa.me/${PHONE}?text=${encodeURIComponent(txt)}`;
 const ico = id => `<svg class="icon"><use href="#${id}"/></svg>`;
+
+/* ---- classement des notes olfactives (pour les pastilles) ---- */
+const strip = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const NOTE_CATS = [
+  {c:"oud",    i:"i-oud",    k:["oud"]},
+  {c:"epice",  i:"i-epice",  k:["epice","cannelle","poivre","baie","cardamome","safran","gingembre","muscade","piment","coriandre","cumin","girofle","anis"]},
+  {c:"floral", i:"i-floral", k:["rose","iris","jasmin","tubereuse","neroli","osmanthus","geranium","heliotrop","fleur","muguet","orchid","freesia","pivoine","violette","ylang"]},
+  {c:"ambre",  i:"i-ambre",  k:["ambr","labdanum","benjoin","encens","myrrhe","elemi","oliban"]},
+  {c:"vanille",i:"i-vanille",k:["vanill","tonka","praline","caramel","cafe","cacao","beurre","creme","marshmallow","chataigne","sucre","miel","chocolat","rhum"]},
+  {c:"musc",   i:"i-musc",   k:["musc"]},
+  {c:"cuir",   i:"i-cuir",   k:["cuir","tabac"]},
+  {c:"boise",  i:"i-boise",  k:["bois","cedre","santal","vetiver","patchouli","bouleau","papyrus","mousse","gaiac","cachemire"]},
+  {c:"vert",   i:"i-vert",   k:["vert","aromatique","sauge","lavande","the noir","the ","iode","sale"]},
+  {c:"fruit",  i:"i-fruit",  k:["agrume","bergamote","citron","mandarine","orange","cedrat","pomme","poire","peche","fraise","framboise","cassis","datte","confit","ananas","melon","coco","passion"]},
+];
+function noteCat(note){
+  const s = strip(note);
+  for(const cat of NOTE_CATS) if(cat.k.some(k => s.includes(k))) return cat;
+  return {c:"autre", i:"i-sparkle"};
+}
+const splitNotes = s => (s || "").split(",").map(n => n.trim()).filter(Boolean);
+function notePills(str){
+  return `<div class="when">${splitNotes(str).map(n => { const cat = noteCat(n);
+    return `<span class="when-tag note-tag cat-${cat.c}">${ico(cat.i)}${esc(n)}</span>`; }).join("")}</div>`;
+}
 
 /* ---- chips ---- */
 function chips(container, items, key){
@@ -1500,11 +1645,13 @@ const lowest = p => p.sizes.reduce((a,b) => b.price < a.price ? b : a, p.sizes[0
 
 function card(p){
   const el = document.createElement('div');
-  el.className = 'card';
+  const out = outOfStock(p);
+  el.className = 'card' + (out ? ' out' : '');
   const min = lowest(p);
   el.innerHTML = `
     <button class="card-vis" aria-label="Voir le détail de ${p.name}">
       <span class="badge">${cap(p.cat)}</span>
+      ${out ? `<span class="badge-stock">Rupture de stock</span>` : ''}
       <img class="card-img" src="img/${p.img}.webp" alt="Flacon ${p.name}" loading="lazy" decoding="async" width="400" height="400">
       <span class="peek">${ico('i-eye')}Voir le détail</span>
     </button>
@@ -1527,6 +1674,10 @@ function card(p){
 
 /* ---- fenêtre détail ---- */
 const modal = document.getElementById('modal');
+const searchOverlay = document.getElementById('searchOverlay');
+const qSearchInput = document.getElementById('qSearchInput');
+const qSearchResults = document.getElementById('qSearchResults');
+let qsLastFocus = null;
 let lastFocus = null;
 
 function openModal(p){
@@ -1538,11 +1689,14 @@ function openModal(p){
     <div class="m-house">${p.house}${p.line ? ` · ${p.line}` : ""}</div>
     <h3 id="mName">${p.name}</h3>
     <div class="m-fam">${p.family}</div>
+    <div class="m-stock" id="mStockBadge" hidden>${ico('i-close')}Rupture de stock</div>
     <p class="m-desc">${p.desc}</p>
 
     <div class="m-block">
       <span class="m-label">Les notes</span>
-      <div class="m-notes"><b>Tête</b> · ${p.top}<br><b>Cœur</b> · ${p.heart}<br><b>Fond</b> · ${p.base}</div>
+      <div class="note-group"><span class="note-sub">Tête</span>${notePills(p.top)}</div>
+      <div class="note-group"><span class="note-sub">Cœur</span>${notePills(p.heart)}</div>
+      <div class="note-group"><span class="note-sub">Fond</span>${notePills(p.base)}</div>
     </div>
 
     <div class="m-block">
@@ -1635,11 +1789,23 @@ function openModal(p){
     addEl.innerHTML = `${ico('i-check')}Ajouté · Voir mon panier`;
   };
   render();
+  paintStockBadge(p);
 
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
   syncURL(p.img);
   modal.querySelector('.modal-x').focus();
+}
+
+function paintStockBadge(p){
+  const badge = document.getElementById('mStockBadge');
+  const addEl = document.getElementById('mAdd');
+  if(!badge || !addEl) return;
+  const out = outOfStock(p);
+  badge.hidden = !out;
+  addEl.disabled = out;
+  if(out){ delete addEl.dataset.added; addEl.innerHTML = `${ico('i-close')}Rupture de stock`; }
+  else if(!addEl.dataset.added){ addEl.innerHTML = `${ico('i-bag')}Ajouter au panier`; }
 }
 
 function closeModal(){
@@ -1651,18 +1817,77 @@ function closeModal(){
 modal.addEventListener('click', e => { if(e.target.hasAttribute('data-close') || e.target.closest('[data-close]')) closeModal(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape' && !modal.hidden) closeModal(); });
 
+/* ---- recherche rapide (fenêtre, sans avoir à scroller) ---- */
+function closeQuickSearch(){
+  searchOverlay.hidden = true;
+  document.body.style.overflow = '';
+  if(qsLastFocus) qsLastFocus.focus();
+}
+function openQuickSearch(){
+  qsLastFocus = document.activeElement;
+  searchOverlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+  renderQuickResults(qSearchInput.value);
+  setTimeout(() => qSearchInput.focus(), 30);
+}
+function renderQuickResults(qRaw){
+  const q = (qRaw || "").trim();
+  if(!q){
+    qSearchResults.innerHTML = `<div class="qsearch-hint">Tapez un nom, une maison ou une note — « oud », « Lattafa », « rose »…</div>`;
+    return;
+  }
+  const list = products.filter(p => matchSearch(p, q));
+  if(!list.length){
+    qSearchResults.innerHTML = `<div class="qsearch-empty">Aucun parfum ne correspond à « ${esc(q)} ».</div>`;
+    return;
+  }
+  const MAX = 8;
+  const shown = list.slice(0, MAX);
+  qSearchResults.innerHTML = shown.map(p => `
+    <button type="button" class="qresult" data-slug="${p.img}">
+      <img src="img/${p.img}.webp" alt="" width="44" height="44" loading="lazy">
+      <div class="qresult-info"><div class="qresult-house">${esc(p.house)}</div><div class="qresult-name">${esc(p.name)}</div></div>
+      <div class="qresult-price">${outOfStock(p) ? '<span class="qresult-out">Rupture</span>' : fmt(lowest(p).price)}</div>
+    </button>`).join("")
+    + (list.length > MAX ? `<button type="button" class="qsearch-more" id="qSeeAll">Voir les ${list.length} résultats dans le catalogue</button>` : "");
+  qSearchResults.querySelectorAll('.qresult').forEach(b => {
+    b.onclick = () => { const p = prodOf(b.dataset.slug); closeQuickSearch(); openModal(p); };
+  });
+  const seeAll = document.getElementById('qSeeAll');
+  if(seeAll) seeAll.onclick = () => {
+    state.q = q; searchInput.value = q; searchClear.hidden = false; paint();
+    closeQuickSearch();
+    document.getElementById('catalogue').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+}
+let qsSearchT;
+qSearchInput.addEventListener('input', () => {
+  clearTimeout(qsSearchT);
+  qsSearchT = setTimeout(() => renderQuickResults(qSearchInput.value), 120);
+});
+qSearchInput.addEventListener('keydown', e => { if(e.key === 'Enter'){ const first = qSearchResults.querySelector('.qresult'); if(first) first.click(); } });
+searchOverlay.addEventListener('click', e => { if(e.target.closest('[data-qsclose]')) closeQuickSearch(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !searchOverlay.hidden) closeQuickSearch(); });
+
 /* ---- liens partageables ---- */
 const SITE = 'https://nouiparfumerie.com';
 const slugify = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 let currentSlug = null;
-function filtersActive(){ return state.genre!=='tous' || state.house!=='tous' || state.note!=='tous' || !!state.occ; }
+function filtersActive(){ return state.genre!=='tous' || state.house!=='tous' || state.note!=='tous' || !!state.occ || !!state.q; }
 function filterQuery(){
   const q = new URLSearchParams();
   if(state.genre!=='tous') q.set('pour', state.genre);
   if(state.house!=='tous') q.set('maison', slugify(state.house));
   if(state.note!=='tous')  q.set('note', state.note);
   if(state.occ)            q.set('moment', state.occ);
+  if(state.q)              q.set('q', state.q);
   const s = q.toString(); return s ? '?' + s : '';
+}
+function matchSearch(p, qRaw){
+  const q = strip(qRaw).trim();
+  if(!q) return true;
+  const hay = strip([p.name, p.house, p.family, p.top, p.heart, p.base, (p.tags||[]).join(' ')].filter(Boolean).join(' '));
+  return q.split(/\s+/).every(word => hay.includes(word));
 }
 function selectionLabel(){
   const parts = [];
@@ -1700,6 +1925,7 @@ function readURL(){
   const m = q.get('maison'); const h = m && HOUSES.find(x=>slugify(x.name)===m); if(h) state.house = h.name;
   const n = q.get('note');   if(n && NOTES.some(x=>x.v===n)) state.note = n;
   const o = q.get('moment'); if(o && MOMENTS.some(x=>x.v===o && x.kind==='occ')) state.occ = o;
+  const sq = q.get('q'); if(sq) state.q = sq;
   const p = q.get('p');
   return { product: p && products.find(x=>x.img===p), filtered: filtersActive() };
 }
@@ -1897,7 +2123,8 @@ function paint(){
     (state.genre==="tous" || p.cat===state.genre || (p.cat==="unisexe" && state.genre!=="unisexe")) &&
     (state.house==="tous" || p.house===state.house) &&
     (state.note==="tous"  || p.tags.includes(state.note)) &&
-    (!state.occ           || p.when.includes(state.occ))
+    (!state.occ           || p.when.includes(state.occ)) &&
+    matchSearch(p, state.q)
   );
 
   const grid = document.getElementById('grid');
@@ -1914,7 +2141,9 @@ function paint(){
   syncURL(modal.hidden ? null : currentSlug);
 
   if(!list.length){
-    grid.innerHTML = `<div class="empty">Aucun parfum pour cette combinaison.<br>Essayez une autre note ou réaffichez tout le catalogue.</div>`;
+    grid.innerHTML = state.q
+      ? `<div class="empty">Aucun parfum ne correspond à « ${esc(state.q)} ».<br>Essayez un autre mot, ou réaffichez tout le catalogue.</div>`
+      : `<div class="empty">Aucun parfum pour cette combinaison.<br>Essayez une autre note ou réaffichez tout le catalogue.</div>`;
     return;
   }
   list.forEach((p, i) => {
@@ -1927,8 +2156,25 @@ function paint(){
 }
 
 document.getElementById('reset').onclick = () => {
-  state.genre = state.house = state.note = "tous"; state.occ = null; paint();
+  state.genre = state.house = state.note = "tous"; state.occ = null; state.q = "";
+  searchInput.value = ""; searchClear.hidden = true;
+  paint();
 };
+
+/* ---- recherche ---- */
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+let searchT;
+searchInput.addEventListener('input', () => {
+  searchClear.hidden = !searchInput.value;
+  clearTimeout(searchT);
+  searchT = setTimeout(() => { state.q = searchInput.value; paint(); }, 180);
+});
+searchInput.addEventListener('search', () => { state.q = searchInput.value; searchClear.hidden = !searchInput.value; paint(); });
+searchClear.addEventListener('click', () => {
+  searchInput.value = ""; searchClear.hidden = true; state.q = ""; paint(); searchInput.focus();
+});
+document.getElementById('headSearchBtn').addEventListener('click', openQuickSearch);
 
 const hello = wa("Bonjour, je suis intéressé(e) par vos parfums.");
 document.getElementById('ctaFoot').href = hello;
@@ -1938,12 +2184,14 @@ document.getElementById('yr').textContent = new Date().getFullYear();
 buildMaisons();
 buildOccasions();
 const fromURL = readURL();
+if(state.q){ searchInput.value = state.q; searchClear.hidden = false; }
 paint();
 if(fromURL.product){
   setTimeout(() => openModal(fromURL.product), 350);
 } else if(fromURL.filtered){
   setTimeout(() => document.getElementById('catalogue').scrollIntoView(), 120);
 }
+fetchStock();
 
 /* ---- apparition au défilement ---- */
 document.querySelectorAll('.sec-head, .assur-item, .maison, .occ').forEach(el => {
