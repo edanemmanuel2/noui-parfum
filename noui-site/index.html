@@ -2021,6 +2021,35 @@ function validate(form){
   return { prenom: val('prenom'), nom: val('nom'), tel: val('tel'), email: val('email'), commune: val('commune'), repere: val('repere') };
 }
 
+let orderRef = null, orderSig = '';   // identifiant unique de cette commande (le même si le client réessaie le même panier => jamais de doublon)
+function newRef(){
+  try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g,'').slice(0,24); }catch(e){}
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function parseJSONResponse(r){ try{ return JSON.parse(await r.text()); }catch(e){ return null; } }
+
+/* Demande au serveur si la commande de cette référence est bien enregistrée. true / false / null (impossible de savoir). */
+async function orderFound(ref){
+  for(let i = 0; i < 3; i++){
+    try{
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 12000);
+      const r = await fetch(ORDER_ENDPOINT + '?action=check&ref=' + encodeURIComponent(ref), { signal: ctrl.signal, redirect: 'follow' });
+      clearTimeout(t);
+      const j = await parseJSONResponse(r);
+      if(j && j.ok) return j.found ? j.order : false;
+    }catch(e){}
+    await wait(1500);
+  }
+  return null;
+}
+
+/* Les e-mails partent dans un 2e appel, en arrière-plan : le client n'attend pas. Un seul nouvel essai si ça échoue. */
+function sendEmailsInBackground(numero, ref){
+  const go = () => fetch(ORDER_ENDPOINT, { method:'POST', body: JSON.stringify({ action:'send_emails', numero, ref }), keepalive: true, redirect:'follow' }).then(parseJSONResponse).catch(() => null);
+  go().then(j => { if(!j || !j.ok) setTimeout(go, 6000); });
+}
+
 async function submitOrder(e){
   e.preventDefault();
   const form = e.target, errBox = form.querySelector('#formErr');
@@ -2029,26 +2058,47 @@ async function submitOrder(e){
   if(form.elements.site.value) return;   // robot
   if(!ORDER_ENDPOINT){ window.open(wa(waOrderText(c)), '_blank', 'noopener'); return showDone(c, null, 'wa'); }
   const btn = document.getElementById('sendOrder');
+  if(btn.disabled) return;   // déjà en cours : pas de double envoi
   btn.disabled = true; btn.textContent = 'Envoi en cours…';
+  const sig = JSON.stringify(cart) + '|' + c.tel;
+  if(!orderRef || sig !== orderSig){ orderRef = newRef(); orderSig = sig; }
+  const ref = orderRef;
   const payload = {
+    ref, deferEmails: true,
     client: c,
     items: cart.map(it => { const p = prodOf(it.slug); return { slug: it.slug, nom: p.name, maison: p.house, ml: it.ml, prix: it.price, qte: it.qty }; }),
     total: cartTotal(), page: location.href,
   };
+  const done = (num, how) => { orderRef = null; showDone(c, num, how); sendEmailsInBackground(num || '', ref); };
+  const showErr = (why) => {
+    btn.disabled = false; btn.innerHTML = `${ico('i-check')}Confirmer ma commande`;
+    errBox.innerHTML = `<div class="form-err">Votre commande n'a pas pu être envoyée (${esc(why || 'connexion interrompue')}). Réessayez, ou envoyez-la sur WhatsApp : <br><a class="wa-alt" style="margin-top:8px" target="_blank" rel="noopener" href="${wa(waOrderText(c))}">${ico('i-chat')}Envoyer ma commande sur WhatsApp</a></div>`;
+  };
+  let problem = '', ranButLost = false;
   try {
-    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 45000);
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 30000);
     let r;
     try { r = await fetch(ORDER_ENDPOINT, { method: 'POST', body: JSON.stringify(payload), signal: ctrl.signal, redirect: 'follow' }); }
-    catch(e){ throw new Error(e.name === 'AbortError' ? 'délai dépassé' : 'connexion impossible'); }
+    catch(e2){ problem = e2.name === 'AbortError' ? 'délai dépassé' : 'connexion impossible'; }
     finally { clearTimeout(t); }
-    const txt = await r.text(); let res;
-    try { res = JSON.parse(txt); } catch(e){ throw new Error('réponse inattendue du serveur (' + r.status + ')'); }
-    if(!res.ok) throw new Error(res.error || 'refus');
-    showDone(c, res.order, res.emailed ? 'mail' : 'saved');
-  } catch(err){
-    btn.disabled = false; btn.innerHTML = `${ico('i-check')}Confirmer ma commande`;
-    errBox.innerHTML = `<div class="form-err">Votre commande n'a pas pu être envoyée (${esc(err.message || 'connexion interrompue')}). Réessayez, ou envoyez-la sur WhatsApp : <br><a class="wa-alt" style="margin-top:8px" target="_blank" rel="noopener" href="${wa(waOrderText(c))}">${ico('i-chat')}Envoyer ma commande sur WhatsApp</a></div>`;
-  }
+    if(r){
+      const res = await parseJSONResponse(r);
+      if(res && res.ok) return done(res.order, res.emailed ? 'mail' : 'saved');
+      if(res && !res.ok){
+        problem = res.error || 'refus';
+        if(res.error === 'Coordonnées incomplètes' || res.error === 'Panier vide') return showErr(problem);   // refus net : inutile de vérifier
+      }
+      else { problem = 'réponse inattendue du serveur (' + r.status + ')'; ranButLost = r.redirected; }
+    }
+  } catch(err){ problem = err.message || 'connexion interrompue'; }
+
+  // Réponse perdue ou lente : la commande est peut-être quand même enregistrée -> on vérifie avant de dire quoi que ce soit.
+  btn.textContent = 'Vérification…';
+  const found = await orderFound(ref);
+  if(found){ return done(found, 'saved'); }
+  if(found === null && ranButLost){ orderRef = null; showDone(c, null, 'unconfirmed'); sendEmailsInBackground('', ref); return; }   // le serveur a répondu mais on n'a pas pu relire : on rassure sans afficher d'erreur
+
+  showErr(problem);
 }
 
 function showDone(c, num, how){
@@ -2056,12 +2106,14 @@ function showDone(c, num, how){
   dTitle.textContent = 'Commande envoyée';
   const msg = how === 'mail'
     ? `Un e-mail de confirmation vient de vous être envoyé à <b>${esc(c.email)}</b>. Un conseiller Noui vous appellera bientôt au <b>${esc(c.tel)}</b> pour organiser la livraison.`
+    : how === 'unconfirmed'
+    ? `Votre commande a bien été transmise à Noui. Un conseiller vous appellera bientôt au <b>${esc(c.tel)}</b> pour organiser la livraison. Sans appel de notre part, écrivez-nous sur WhatsApp.`
     : how === 'saved'
     ? `Votre commande est bien enregistrée. Un conseiller Noui vous appellera bientôt au <b>${esc(c.tel)}</b> pour organiser la livraison.`
     : `Envoyez le message préparé dans WhatsApp pour finaliser. Un conseiller Noui vous répondra rapidement pour organiser la livraison.`;
   dBody.innerHTML = `<div class="done">${ico('i-check')}<h3>Merci ${esc(c.prenom)} !</h3>${num ? `<div class="num">Commande n° ${esc(num)}</div>` : ''}<p>${msg}</p><p>Paiement à la réception.</p></div>`;
   dFoot.innerHTML = `
-    ${num ? `<a class="wa-alt" target="_blank" rel="noopener" href="${wa(`Bonjour, je viens de passer la commande ${num} sur le site.`)}">${ico('i-chat')}Une question ? Écrivez-nous sur WhatsApp</a>` : ''}
+    ${num ? `<a class="wa-alt" target="_blank" rel="noopener" href="${wa(`Bonjour, je viens de passer la commande ${num} sur le site.`)}">${ico('i-chat')}Une question ? Écrivez-nous sur WhatsApp</a>` : (how === 'unconfirmed' ? `<a class="wa-alt" target="_blank" rel="noopener" href="${wa(waOrderText(c))}">${ico('i-chat')}Écrire à Noui sur WhatsApp</a>` : '')}
     <button type="button" class="btn btn-block" data-dclose>Continuer mes achats</button>`;
   if(how !== 'wa'){ cart = []; saveCart(); }
 }
